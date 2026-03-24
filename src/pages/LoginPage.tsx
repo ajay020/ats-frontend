@@ -44,6 +44,7 @@ const LoginPage = () => {
                         <input
                             {...register('email')}
                             type="email"
+                            placeholder='email'
                             className={`mt-1 block w-full px-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                         />
                         {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -55,6 +56,7 @@ const LoginPage = () => {
                         <input
                             {...register('password')}
                             type="password"
+                            placeholder='password'
                             className={`mt-1 block w-full px-3 py-2 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                         />
                         {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
