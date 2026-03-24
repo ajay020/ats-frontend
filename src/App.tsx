@@ -8,6 +8,7 @@ import DashboardPage from './pages/DashboardPage';
 import { useAuthStore } from './stores/auth.store';
 import { useEffect } from 'react';
 import { authApi } from './api/auth.api';
+import CreateApplicationPage from './pages/CreateApplicationPage';
 
 function App() {
   const { token, setAuth, setLoading } = useAuthStore((state) => state);
@@ -47,6 +48,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ApplicationsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/applications/new"
+          element={
+            <ProtectedRoute>
+              <CreateApplicationPage />
             </ProtectedRoute>
           }
         />
