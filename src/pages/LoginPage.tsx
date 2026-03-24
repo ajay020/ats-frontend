@@ -4,8 +4,11 @@ import { loginSchema, LoginFormValues } from '@/schemas/auth.schema';
 import { useAuthStore } from '@/stores/auth.store';
 import { useNavigate } from 'react-router-dom';
 import { authApi } from '@/api/auth.api';
+import { useEffect, useState } from "react";
 
 const LoginPage = () => {
+    const [errorMessage, setErrorMessage] = useState("");
+
     const setAuth = useAuthStore((state) => state.setAuth);
     const navigate = useNavigate();
 
@@ -17,18 +20,27 @@ const LoginPage = () => {
         resolver: zodResolver(loginSchema),
     });
 
+    const token = useAuthStore(state => state.token)
+
+    useEffect(() => {
+        if (token) {
+            navigate("/applications", { replace: true });
+        }
+    }, [token]);
+
     const onSubmit = async (data: LoginFormValues) => {
         try {
+            setErrorMessage("")
+
             const response = await authApi.login(data);
             const { user, tokens } = response;
 
             // Save to Zustand store
             setAuth(user, tokens.accessToken);
-
-            // Redirect to dashboard or home
-            navigate('/');
         } catch (error: any) {
-            alert(error.response?.data?.message || 'Login failed');
+            setErrorMessage(
+                error.response?.data?.message || "Login failed"
+            );
         }
     };
 
@@ -36,6 +48,12 @@ const LoginPage = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
             <div className="max-w-md w-full p-8 bg-white shadow-lg rounded-lg">
                 <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Login to ATS</h2>
+
+                {errorMessage && (
+                    <div className="bg-red-100 text-red-700 p-2 rounded text-sm">
+                        {errorMessage}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Email Field */}

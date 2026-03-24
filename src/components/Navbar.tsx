@@ -10,7 +10,7 @@ export default function Navbar() {
         navigate("/login");
     };
 
-    if (!user) return null; // hide navbar if not logged in
+    // if (!user) return null; // hide navbar if not logged in
 
     return (
         <nav className="bg-white border-b px-6 py-3 flex items-center justify-between">

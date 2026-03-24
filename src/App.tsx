@@ -5,8 +5,30 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import ApplicationsPage from './pages/ApplicationsPage';
 import DashboardPage from './pages/DashboardPage';
+import { useAuthStore } from './stores/auth.store';
+import { useEffect } from 'react';
+import { authApi } from './api/auth.api';
 
 function App() {
+  const { token, setAuth, setLoading } = useAuthStore((state) => state);
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const user = await authApi.getMe();
+        setAuth(user, token);
+      } catch (err) {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
+  }, [token]);
 
   return (
     <>

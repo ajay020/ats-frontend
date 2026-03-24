@@ -40,9 +40,9 @@ apiClient.interceptors.response.use(
                 // Logically call your /auth/refresh endpoint here
                 // If successful, save new token and retry originalRequest
                 // For now, let's just logout if unauthorized
-                console.error('Session expired. Redirecting to login...');
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
+                // console.error('Session expired. Redirecting to login...');
+                // localStorage.removeItem('accessToken');
+                // window.location.href = '/login';
             } catch (refreshError) {
                 return Promise.reject(refreshError);
             }
