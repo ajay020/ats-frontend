@@ -8,8 +8,6 @@ export default function ProtectedRoute({ children }: any) {
         return <div>Loading...</div>
     }
 
-    console.log("Token: ", token)
-
     if (!token) {
         return <Navigate to="/login" replace />;
     }

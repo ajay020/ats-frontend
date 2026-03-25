@@ -10,9 +10,12 @@ import { useEffect } from 'react';
 import { authApi } from './api/auth.api';
 import CreateApplicationPage from './pages/CreateApplicationPage';
 import EditApplicationPage from './pages/EditApplicationPage';
+import MainLayout from './components/MainLayout';
 
 function App() {
-  const { token, setAuth, setLoading } = useAuthStore((state) => state);
+  const token = useAuthStore((state) => state.token);
+  const setAuth = useAuthStore((state) => state.setAuth);
+  const setLoading = useAuthStore((state) => state.setLoading);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -34,44 +37,25 @@ function App() {
 
   return (
     <>
-      <Navbar />
       <Routes>
+        {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
+        {/* Protected Layout */}
         <Route
-          path="/dashboard"
-          element={<DashboardPage />}
-        />
-
-        <Route
-          path="/applications"
           element={
             <ProtectedRoute>
-              <ApplicationsPage />
+              <MainLayout />
             </ProtectedRoute>
           }
-        />
-
-        <Route
-          path="/applications/new"
-          element={
-            <ProtectedRoute>
-              <CreateApplicationPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/applications/:id/edit"
-          element={
-            <ProtectedRoute>
-              <EditApplicationPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        >
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route index path="/dashboard" element={<DashboardPage />} />
+          <Route path="/applications" element={<ApplicationsPage />} />
+          <Route path="/applications/new" element={<CreateApplicationPage />} />
+          <Route path="/applications/:id/edit" element={<EditApplicationPage />} />
+        </Route>
       </Routes>
     </>
 
