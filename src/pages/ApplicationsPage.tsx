@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { applicationApi } from "@/api/application.api";
 import { useNavigate } from "react-router-dom";
 
@@ -56,8 +56,6 @@ export default function ApplicationsPage() {
     const totalPages = data?.meta?.totalPages ?? 1;
 
 
-    // console.log("Data", data)
-
     const handleSearchChange = (value: string) => {
         setSearch(value);
         setPage(1);
@@ -74,12 +72,23 @@ export default function ApplicationsPage() {
         setPage(1);
     };
 
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => applicationApi.delete(id),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["applications"] });
+        },
+
+        onError: () => {
+            alert("Failed to delete application");
+        },
+    });
+
     const handleDelete = async (id: string) => {
         const ok = window.confirm("Delete this application?");
         if (!ok) return;
 
-        await applicationApi.delete(id);
-        queryClient.invalidateQueries({ queryKey: ["applications"] });
+        deleteMutation.mutate(id);
     };
 
     return (
@@ -200,9 +209,10 @@ export default function ApplicationsPage() {
                                         </button>
                                         <button
                                             onClick={() => handleDelete(app.id)}
+                                            disabled={deleteMutation.isPending}
                                             className="flex-1 rounded-lg bg-red-500 px-3 py-2 text-sm font-medium text-white hover:bg-red-600"
                                         >
-                                            Delete
+                                            {deleteMutation.isPending ? "Deleting..." : "Delete"}
                                         </button>
                                     </div>
                                 </div>
