@@ -35,6 +35,8 @@ export const applicationApi = {
             `/applications/${id}`
         );
 
+        console.log("Application: ", res)
+
         return res.data.data!;
     },
 

@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { applicationApi } from "@/api/application.api";
 import { useNavigate } from "react-router-dom";
+import { Application } from "@/types/application.types";
+import { ApplicationStatus } from "@/types";
 
-type ApplicationStatus = "WISHLIST" | "APPLIED" | "INTERVIEW" | "OFFER" | "REJECTED";
 
 const statusOptions: { label: string; value: "" | ApplicationStatus }[] = [
     { label: "All Status", value: "" },
@@ -164,7 +165,7 @@ export default function ApplicationsPage() {
                 {!isLoading && !isError && applications.length > 0 && (
                     <>
                         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                            {applications.map((app: any) => (
+                            {applications.map((app: Application) => (
                                 <div
                                     key={app.id}
                                     className="rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow-md"
@@ -190,21 +191,13 @@ export default function ApplicationsPage() {
 
                                     <div className="mt-4 space-y-2 text-sm text-gray-600">
                                         {app.location && <p>📍 {app.location}</p>}
-                                        {app.jobUrl && (
-                                            <a
-                                                href={app.jobUrl}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="block truncate text-blue-600 hover:underline"
-                                            >
-                                                Job Link
-                                            </a>
-                                        )}
                                         <p>Created: {new Date(app.createdAt).toLocaleDateString()}</p>
                                     </div>
 
                                     <div className="mt-5 flex gap-2">
-                                        <button className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium hover:bg-gray-100">
+                                        <button
+                                            onClick={() => navigate(`/applications/${app.id}/edit`)}
+                                            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium hover:bg-gray-100">
                                             Edit
                                         </button>
                                         <button

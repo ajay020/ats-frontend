@@ -1,8 +1,15 @@
-export type Application = {
+export type Company = {
     _id: string;
-    company: string;
-    position: string;
-    status: "applied" | "interview" | "offer" | "rejected";
+    name: string;
+}
+
+export type ApplcationStatus = "WISHLIST" | "APPLIED" | "INTERVIEW" | "OFFER" | "REJECTED";
+
+export type Application = {
+    id: string;
+    company: Company;
+    jobTitle: string;
+    status: ApplcationStatus
     jobType?: string;
     location?: string;
     createdAt: string;

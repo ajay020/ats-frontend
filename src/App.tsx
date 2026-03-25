@@ -9,6 +9,7 @@ import { useAuthStore } from './stores/auth.store';
 import { useEffect } from 'react';
 import { authApi } from './api/auth.api';
 import CreateApplicationPage from './pages/CreateApplicationPage';
+import EditApplicationPage from './pages/EditApplicationPage';
 
 function App() {
   const { token, setAuth, setLoading } = useAuthStore((state) => state);
@@ -57,6 +58,15 @@ function App() {
           element={
             <ProtectedRoute>
               <CreateApplicationPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/applications/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditApplicationPage />
             </ProtectedRoute>
           }
         />
