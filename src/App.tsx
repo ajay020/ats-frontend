@@ -1,65 +1,52 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import Navbar from './components/Navbar';
-import ProtectedRoute from './components/ProtectedRoute';
-import ApplicationsPage from './pages/ApplicationsPage';
-import DashboardPage from './pages/DashboardPage';
-import { useAuthStore } from './stores/auth.store';
-import { useEffect } from 'react';
-import { authApi } from './api/auth.api';
-import CreateApplicationPage from './pages/CreateApplicationPage';
-import EditApplicationPage from './pages/EditApplicationPage';
-import MainLayout from './components/MainLayout';
+import { useAuth } from '@/hooks/useAuth';
+import { AppShell } from '@/components/layout/AppShell';
 
-function App() {
-  const token = useAuthStore((state) => state.token);
-  const setAuth = useAuthStore((state) => state.setAuth);
-  const setLoading = useAuthStore((state) => state.setLoading);
+import { LoginPage } from '@/pages/auth/LoginPage';
+import { RegisterPage } from '@/pages/auth/RegisterPage';
+import DashboardPage from '@/pages/dashboard/DashboardPage';
+import { ApplicationsPage } from '@/pages/applications/ApplicationsPage';
+import { ApplicationDetailPage } from '@/pages/applications/ApplicationDetailPage';
 
-  useEffect(() => {
-    const initAuth = async () => {
-      try {
-        if (!token) {
-          setLoading(false);
-          return;
-        }
 
-        const user = await authApi.getMe();
-        setAuth(user, token);
-      } catch (err) {
-        setLoading(false);
-      }
-    };
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isLoading } = useAuth();
 
-    initAuth();
-  }, [token]);
+  if (isLoading) return <div className="flex bg-red-200 h-screen items-center justify-center">
+    <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+  </div>;
 
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  return <>{children}</>;
+};
+
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) return (<div className="flex bg-slate-200 h-screen items-center justify-center">
+    <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+  </div>)
+
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+
+  return <>{children}</>;
+};
+
+export default function App() {
   return (
-    <>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+    <Routes>
+      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
 
-        {/* Protected Layout */}
-        <Route
-          element={
-            <ProtectedRoute>
-              <MainLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route index path="/dashboard" element={<DashboardPage />} />
-          <Route path="/applications" element={<ApplicationsPage />} />
-          <Route path="/applications/new" element={<CreateApplicationPage />} />
-          <Route path="/applications/:id/edit" element={<EditApplicationPage />} />
-        </Route>
-      </Routes>
-    </>
+      <Route path="/" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
+        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="applications" element={<ApplicationsPage />} />
+        <Route path="applications/:id" element={<ApplicationDetailPage />} />
+      </Route>
 
-  )
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  );
 }
-
-export default App
