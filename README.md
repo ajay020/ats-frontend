@@ -23,7 +23,7 @@ A full-stack job application tracker built with **Express.js + TypeScript** on t
 
 JobTrackr lets you track every job application from wishlist to offer. Each application records its full status history as an audit trail, so you can see exactly how long each stage took and review every note and contact along the way.
 
-![Dashboard](https://placehold.co/900x500/fafaf9/1a1916?text=Dashboard+screenshot)
+![Dashboard](/public/dashboard.png)
 
 ---
 
